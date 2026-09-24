@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Casos de teste</title>
+<style>
+  :root {
+    --bg: #fbfbfa;
+    --fg: #1a1a18;
+    --dim: #6b6b66;
+    --line: #e4e4e0;
+    --pass: #1a7f45;
+    --fail: #c0362c;
+    --card: #fff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17171a;
+      --fg: #ececea;
+      --dim: #9a9a95;
+      --line: #2c2c31;
+      --pass: #4ac07a;
+      --fail: #f2695c;
+      --card: #1e1e22;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 48px 16px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 20px;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+
+  #summary {
+    margin: 0 0 24px;
+    color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--card);
+    overflow: hidden;
+  }
+
+  li {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    padding: 12px 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  li:first-child {
+    border-top: 0;
+  }
+
+  .mark {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .pass .mark {
+    color: var(--pass);
+  }
+
+  .fail .mark {
+    color: var(--fail);
+  }
+
+  .name {
+    flex: 1;
+  }
+
+  .err {
+    display: block;
+    margin-top: 4px;
+    color: var(--fail);
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 13px;
+  }
+
+  footer {
+    margin-top: 20px;
+    color: var(--dim);
+    font-size: 13px;
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+  }
+</style>
+<main>
+  <h1>Casos de teste</h1>
+  <p id="summary">Executando…</p>
+  <ul id="list"></ul>
+  <footer>Adicione um caso de teste em <code>src/cases.js</code>, o mesmo arquivo que a esteira de pipeline executa.
+    Esta página nunca é implantada com um caso de teste falhando.</footer>
+</main>
+<script type="module">
+  import { run } from './src/cases.js';
+
+  const results = run();
+  const passed = results.filter((r) => r.pass).length;
+
+  document.getElementById('summary').textContent =
+    `${passed}/${results.length} passando`;
+
+  document.getElementById('list').innerHTML = results.map(({ name, pass, error }) => `
+    <li class="${pass ? 'pass' : 'fail'}">
+      <span class="mark" aria-hidden="true">${pass ? 'PASSOU' : 'FALHOU'}</span>
+      <span class="name">${name}${error ? `<span class="err">${error}</span>` : ''}</span>
+    </li>`).join('');
+</script>
